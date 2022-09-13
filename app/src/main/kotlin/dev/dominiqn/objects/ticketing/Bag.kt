@@ -12,25 +12,38 @@ class Bag(
     /**
      * 현금
      */
-    private var amount: Long,
+    amount: Long,
     private val invitation: Invitation? = null,
 ) {
+    var amount = amount
+        private set
+
     /**
      * 초대장은 티켓으로 교환할 수 있다.
      */
     var ticket: Ticket? = null
+        private set
 
     val hasTicket: Boolean
         get() = ticket != null
 
-    val hasInvitation: Boolean
+    private val hasInvitation: Boolean
         get() = invitation != null
 
-    fun minusAmount(amount: Long) {
+    private fun minusAmount(amount: Long) {
         this.amount -= amount
     }
 
     fun plusAmount(amount: Long) {
         this.amount += amount
+    }
+
+    fun hold(ticket: Ticket): Long {
+        this.ticket = ticket
+        if (hasInvitation) {
+            return 0L
+        }
+        minusAmount(ticket.fee)
+        return ticket.fee
     }
 }

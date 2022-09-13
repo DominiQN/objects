@@ -2,34 +2,23 @@ package dev.dominiqn.objects.ticketing
 
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.longs.shouldBeExactly
-import java.time.LocalDateTime
+import io.mockk.every
+import io.mockk.mockk
 
 class AudienceTest : BehaviorSpec({
-    given("초대장이 있을 때") {
-        val ticket = Ticket(fee = 10_000L)
-        val invitation = Invitation(datetime = LocalDateTime.parse("2022-09-14T21:30:00"))
-        val bag = Bag(amount = 0L, invitation = invitation)
+    given("buy") {
+        val ticket = mockk<Ticket>()
+
+        val bag = mockk<Bag>()
+        every { bag.hold(any()) } returns 3_000L
+
         val audience = Audience(bag)
 
-        `when`("티켓을 사면") {
+        `when`("티켓을 구매하면") {
             val amount = audience.buy(ticket)
 
-            then("돈을 내지 않는다.") {
-                amount shouldBeExactly 0L
-            }
-        }
-    }
-
-    given("초대장이 없을 때") {
-        val ticket = Ticket(fee = 10_000L)
-        val bag = Bag(amount = 0L)
-        val audience = Audience(bag)
-
-        `when`("티켓을 사면") {
-            val amount = audience.buy(ticket)
-
-            then("티켓 요금만큼 돈을 낸다.") {
-                amount shouldBeExactly 10_000L
+            then("가방에서 꺼낸 금액을 지불한다.") {
+                amount shouldBeExactly 3_000L
             }
         }
     }
