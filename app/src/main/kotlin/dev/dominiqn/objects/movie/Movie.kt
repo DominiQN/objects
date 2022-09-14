@@ -1,7 +1,14 @@
 package dev.dominiqn.objects.movie
 
-interface Movie {
-    val fee: Money
+import java.time.Duration
 
-    fun calculateMovieFee(screening: Screening): Money
+class Movie(
+    private val title: String,
+    private val runningTime: Duration,
+    val fee: Money,
+    private val discountPolicy: DiscountPolicy,
+) {
+    fun calculateMovieFee(screening: Screening): Money {
+        return fee - discountPolicy.calculateDiscountAmount(screening)
+    }
 }
