@@ -60,16 +60,38 @@ internal class PeriodConditionTest : BehaviorSpec({
     }
 
     given("isSatisfiedBy") {
-        val screening = mockk<Screening>().apply {
-            every { startTime } returns LocalDateTime.parse("2022-09-14T22:00:00")
-        }
-
         val condition = PeriodCondition(
             dayOfWeek = DayOfWeek.WEDNESDAY,
             startTime = LocalTime.parse("21:30"),
             endTime = LocalTime.parse("22:30"),
         )
-        `when`("상영 시작시간이 기간 내에 있지 않다면") {
+
+        val screeningTimeExactlyEqualToStartTime = mockk<Screening>().apply {
+            every { startTime } returns LocalDateTime.parse("2022-09-14T21:30:00")
+        }
+        `when`("상영 요일이 동일하고, 상영 시작시간이 기간 시작과 동일하면") {
+            val isSatisfiedByCondition = condition.isSatisfiedBy(screeningTimeExactlyEqualToStartTime)
+
+            then("할인 가능하다.") {
+                isSatisfiedByCondition shouldBe true
+            }
+        }
+
+        val screeningTimeExactlyEqualToEndTime = mockk<Screening>().apply {
+            every { startTime } returns LocalDateTime.parse("2022-09-14T22:30:00")
+        }
+        `when`("상영 요일이 동일하고, 상영 시작시간이 기간 종료와 동일하면") {
+            val isSatisfiedByCondition = condition.isSatisfiedBy(screeningTimeExactlyEqualToEndTime)
+
+            then("할인 가능하다.") {
+                isSatisfiedByCondition shouldBe true
+            }
+        }
+
+        val screening = mockk<Screening>().apply {
+            every { startTime } returns LocalDateTime.parse("2022-09-14T22:00:00")
+        }
+        `when`("상영 요일이 동일하고, 상영 시작시간이 기간 내에 있다면") {
             val isSatisfiedByCondition = condition.isSatisfiedBy(screening)
 
             then("할인 가능하다.") {

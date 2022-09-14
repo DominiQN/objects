@@ -10,7 +10,6 @@ class PeriodCondition(
 ) : DiscountCondition {
     override fun isSatisfiedBy(screening: Screening): Boolean {
         return (screening.startTime.dayOfWeek == this.dayOfWeek) &&
-            (this.startTime <= screening.startTime.toLocalTime()) &&
-            (this.endTime >= screening.startTime.toLocalTime())
+            (screening.startTime.toLocalTime() in (startTime..endTime))
     }
 }
