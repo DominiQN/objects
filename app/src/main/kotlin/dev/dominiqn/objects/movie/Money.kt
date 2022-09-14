@@ -2,7 +2,7 @@ package dev.dominiqn.objects.movie
 
 import java.math.BigDecimal
 
-class Money(private val amount: BigDecimal) {
+class Money(private val amount: BigDecimal) : Comparable<Money> {
     operator fun plus(other: Money): Money {
         return Money(this.amount + other.amount)
     }
@@ -15,12 +15,8 @@ class Money(private val amount: BigDecimal) {
         return Money(this.amount * BigDecimal.valueOf(percent))
     }
 
-    fun isLessThan(other: Money): Boolean {
-        return this.amount < other.amount
-    }
-
-    fun isGreaterThanOrEqual(other: Money): Boolean {
-        return this.amount >= other.amount
+    override fun compareTo(other: Money): Int {
+        return this.amount.compareTo(other.amount)
     }
 
     companion object {
