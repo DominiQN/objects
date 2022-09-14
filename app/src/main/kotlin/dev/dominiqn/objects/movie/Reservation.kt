@@ -1,3 +1,8 @@
 package dev.dominiqn.objects.movie
 
-class Reservation(customer: Customer, screening: Screening, fee: Money, audienceCount: Int)
+class Reservation(
+    private val customer: Customer,
+    private val screening: Screening,
+    private val fee: Money,
+    private val audienceCount: Int
+)
